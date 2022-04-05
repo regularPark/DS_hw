@@ -24,6 +24,9 @@
     <ClCompile Include="..\..\..\..\..\바탕 화면\main.c">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\..\..\Downloads\polyCalc.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\..\바탕 화면\LinkedPoly.h">

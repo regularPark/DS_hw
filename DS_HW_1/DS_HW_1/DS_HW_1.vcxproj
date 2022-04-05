@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\..\..\Downloads\polyCalc.cpp" />
     <ClCompile Include="..\..\..\..\..\바탕 화면\hw1.c" />
     <ClCompile Include="..\..\..\..\..\바탕 화면\LinkedPoly.c" />
     <ClCompile Include="..\..\..\..\..\바탕 화면\main.c" />
