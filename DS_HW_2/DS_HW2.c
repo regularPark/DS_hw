@@ -1,11 +1,11 @@
-﻿// 2019113632 Park Jeong-Kyu
+// 2019113632 Park Jeong-Kyu
 #include <stdio.h>
 #include <time.h>
 #include <stdlib.h>
 #include <string.h>
-#define MAX_ 5	// 원래 500
-#define SIZE 3		// 0 하나씩 더 붙일것
-#define TOTAL_SIZE 9 // 마찬가지
+#define MAX_ 500	// 원래 500
+#define SIZE 30		// 0 하나씩 더 붙일것
+#define TOTAL_SIZE 90 // 마찬가지
 
 
 typedef struct ListNode {
@@ -21,8 +21,8 @@ void appendNode(Node*head, int n, int i);
 int createRandNum(Node* head);
 void printList(Node*head);
 Node* searchNode(Node*head, int a, int c);
-
-
+void insertNode(Node*p, Node*q, int i);
+void handle(Node*head);
 
 
 
@@ -126,7 +126,21 @@ void printList(Node*head) {
 			}
 		}
 	}
-	printf("\n");
+	printf("\n\n");
+	printf("sorted : { ");
+	Node* p = head;
+
+	while (p->next != NULL) {
+		p = p->next;
+		if (p->next == NULL) {
+
+			printf("%d ", p->data);
+		}
+		else {
+			printf("%d ", p->data);
+		}
+	}
+	printf("}\n\n");
 }
 
 
@@ -147,6 +161,10 @@ Node* searchNode(Node*head, int a, int c) {
 }
 
 void insertNode(Node*p, Node*q, int i) {
+	if (p->prev->data == 0) { 
+		p->next->prev = p->prev;
+		p->prev->next = p->next;
+	}
 	if (p->prev->data != 0)p->prev->next = p->next;
 	if (p->next != NULL) p->next->prev = p->prev;
 
@@ -172,6 +190,61 @@ void insertNode(Node*p, Node*q, int i) {
 }
 
 
+void sortNode(Node*head) {
+	Node*p = head;
+	int tmp;
+	p = p->next;
+	while (p->next!=NULL) {
+		if (p->idx == p->next->idx && p->data > p->next->data) {
+			tmp = p->data;
+			p->data = p->next->data;
+			p->next->data = tmp;
+		}
+		p = p->next;
+	}
+
+	while (p->prev->data != 0) {
+		if (p->idx == p->prev->idx && p->data < p->prev->data) {
+			tmp = p->data;
+			p->data = p->prev->data;
+			p->prev->data = tmp;
+		}
+		p = p->prev;
+	}
+
+}
+
+
+void handle(Node*head) {
+		// make random number for change
+		int i, j, k, r, s[2];
+		srand(time(NULL));
+
+		for (i = 0; i < 2;) {
+			s[i] = rand() % 3 + 1;
+			for (j = 0, k = 0; j < i; j++) {
+				if (s[i] == s[j]) {
+					k = 1; break;
+				}
+			}
+			if (k == 0)
+				i = i + 1;
+		}
+
+		r = rand() % 30 + 1;
+
+		//printf("\n%d %d %d", s[0], s[1], r);
+
+		Node*p = searchNode(head, s[0], r); // 원본
+
+		Node*q = searchNode(head, s[1], r);
+
+
+		insertNode(p, q, s[1]);
+		sortNode(head);
+	
+}
+
 
 
 int main() {
@@ -181,32 +254,15 @@ int main() {
 	createRandNum(head);
 	printList(head);
 	
-	
-	// make random number for change
-	int i, j, k, r, s[2];
-	srand(time(NULL));
-		
-	for (i = 0; i < 2;) {
-		s[i] = rand() % 3 + 1;
-		for (j = 0, k = 0; j < i; j++) {
-			if (s[i] == s[j]) {
-				k = 1; break;
-			}
-		}
-		if (k == 0)
-			i = i + 1;
-	}
-	
-	r = rand() % 3 + 1; // 30개로 늘려라
+	//printf("\n%d %d\n", p->idx, p->data);
 
-	printf("\n%d %d %d", s[0], s[1], r);
-
-	Node*p = searchNode(head, s[0], r);
-	printf("\n%d %d\n", p->idx, p->data);
-	Node*q = searchNode(head, s[1], r);
-	printf("\n%d %d\n", q->idx, q->data);
-
-
-	insertNode(p, q, s[1]);
+	//printf("\n%d %d\n", q->idx, q->data);
+	handle(head);
+	handle(head);
+	handle(head);
+	handle(head);
+	handle(head);
+	printf("-------------------------After operation-------------------------");
 	printList(head);
+
 }
