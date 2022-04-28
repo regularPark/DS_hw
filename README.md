@@ -1,1 +1,1 @@
-# 2022-1 Data Structure Homwork
+# 2022-1 Data Structure Homework
