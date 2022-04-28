@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define SIZE 5 // ÀÓ½Ã ¼³Á¤ ³ªÁß¿¡ »©¾ßµÊ.
+#define SIZE 5 // ìž„ì‹œ ì„¤ì • ë‚˜ì¤‘ì— ë¹¼ì•¼ë¨.
 
 typedef struct QNode {
 	int data;
@@ -131,7 +131,7 @@ int pop(Stack*s) {
 	}
 	else {
 		stackNode* tmp = s->top;
-		// »èÁ¦ °ª ¹ÝÈ¯ À§ÇÑ ÀÛ¾÷ ÇÊ¿ä
+		// ì‚­ì œ ê°’ ë°˜í™˜ ìœ„í•œ ìž‘ì—… í•„ìš”
 
 		s->top = s->top->link;
 		free(tmp);
