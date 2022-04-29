@@ -30,18 +30,18 @@ int qIdx = 0; // index for Queue
 int sSize = 0;
 
 
-int enQ(Stack* s, int item);
+void enQ(Stack* s, int item);
 void deQ(Stack* s);
 int isQEmpty(Stack* s);
 int isQFull(Stack* s);
 int isStackEmpty(Stack* s);
 int isStackFull(); 
 void push(Stack* s, int d);
-int pop(Stack* s);
+void pop(Stack* s);
 
 
 
-int enQ(Stack* s, int item) {
+void enQ(Stack* s, int item) {
 	if (isQFull(s)) {
 		printf("ENQUEUE(OVERFLOW ERROR)\n");
 	}
@@ -139,8 +139,8 @@ void push(Stack *s, int d) {
 }
 
 
-int pop(Stack*s) {
-	int sData, qData;
+void pop(Stack*s) {
+	int sData;
 	if (isStackEmpty(s)) {
 		printf("- STACK POP(UNDERFLOW ERROR)\n");
 	}
@@ -166,42 +166,40 @@ int pop(Stack*s) {
 }
 
 
-Stack createStack(char* sArr[]) {
+Stack* createStack(char* sArr[]) {
 	for (int i = 0; i < 1; i++) {
 		if (sArr[i] != NULL) {
 			if (sArr[i][0] == 'C' && sArr[i][1] == 'S') {
-				Stack s;
-				s.top = NULL;
+				Stack* s = (Stack*)malloc(sizeof(Stack));
+				s->top = NULL;
 				sSize = (int)sArr[i][2] - 48;
 				printf("- STACK CREATED (SIZE=%d)\n", sSize);
 				return s;
 			}
 			else {
 				printf("INPUT ERROR. Create stack first. PLEASE.\n");
-				return;
 			}
 		}
 	}
 }
 
-void handle(Stack s, char* sArr[]) {
+void handle(Stack* s, char* sArr[]) {
 	for (int i = 1; i < 25; i++) {
 		if (sArr[i] != NULL) {
 			if (sArr[i][0] == 'P' && sArr[i][1] == 'U') {
-				push(&s, (int)sArr[i][2] - 48);
+				push(s, (int)sArr[i][2] - 48);
 			}
 			else if (sArr[i][0] == 'E' && sArr[i][1] == 'Q') {
-				enQ(&s, (int)sArr[i][2] - 48);
+				enQ(s, (int)sArr[i][2] - 48);
 			}
 			else if (sArr[i][0] == 'D' && sArr[i][1] == 'Q') {
-				deQ(&s);
+				deQ(s);
 			}
 			else if (sArr[i][0] == 'P' && sArr[i][1] == 'O') {
-				pop(&s);
+				pop(s);
 			}
 			else {
 				printf("input error\n");
-				return 0;
 			}
 		}
 	}
@@ -214,7 +212,7 @@ int main() {
 	char str[100];
 	char* sArr[25] = { NULL, };
 	int i = 0;
-	gets(str);
+	fgets(str, 100, stdin);
 	char* p = strtok(str, " ");
 	while (p != NULL) {
 		sArr[i] = p;
@@ -223,7 +221,7 @@ int main() {
 	}
 
 	printf("\n\nBEGIN\n");
-	Stack st = createStack(sArr);
+	Stack* st = createStack(sArr);
 	handle(st, sArr);
 	printf("END\n");
 
