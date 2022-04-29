@@ -146,7 +146,6 @@ void pop(Stack*s) {
 	}
 	else {
 		stackNode* tmp = s->top;
-		// 삭제 값 반환 위한 작업 필요
 		sData = tmp->size;
 		if (s->top->head->front == NULL)
 			printf("- STACK POP(ST%d -)\n", sData);
