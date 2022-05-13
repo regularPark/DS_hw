@@ -22,6 +22,9 @@ node* heap_tail = NULL;
 void minSortNode(node* n);
 void maxSortNode(node* n);
 node* insertNode(node* root, char* str, int heapSize);
+node* deleteNode(node* root);
+node* findLastNode(node* root);
+void resortMinNode(node* root);
 
 
 void minSortNode(node* n) {
@@ -127,10 +130,75 @@ node* insertNode(node* root, char *str, int heapSize) {
 	return root;
 }
 
-void deleteNode(node* n) {
-	printf("%s",heap_head->key);
 
+
+void resortMinNode(node* root) {
+	char tmpStr[10] = {NULL};
+	node* tmp = root;
+	while (tmp->left) {
+		if (tmp->left != NULL && tmp->right != NULL) {
+			if (strcmp(tmp->left->key, tmp->right->key) < 0 && strcmp(tmp->key, tmp->left->key) > 0) {
+				strcpy(tmpStr, tmp->key);
+				strcpy(tmp->key, tmp->left->key);
+				strcpy(tmp->left->key, tmpStr);
+				tmp = tmp->left;
+			}
+			else if (strcmp(tmp->left->key, tmp->right->key) > 0 && strcmp(tmp->key, tmp->right->key) < 0) {
+				strcpy(tmpStr, tmp->key);
+				strcpy(tmp->key, tmp->right->key);
+				strcpy(tmp->right->key, tmpStr);
+				tmp = tmp->right;
+			}
+		}
+		else if (tmp->left != NULL && tmp->right == NULL) {
+			if (strcmp(tmp->left->key, tmp->key) < 0) {
+				strcpy(tmpStr, tmp->key);
+				strcpy(tmp->key, tmp->left->key);
+				strcpy(tmp->left->key, tmpStr);
+			}
+			else break;
+		}
+		else break;
+	}
 }
+
+
+node* findLastNode(node* root) {
+	node* ptr;
+	ptr = root;
+	while (ptr != NULL) {
+		if (ptr->left && ptr->right) {
+			ptr = ptr->right;
+		}
+		else if (ptr->left && !(ptr->right)) {
+			ptr = ptr->left;
+		}
+		else return ptr;
+	}
+	return ptr;
+}
+
+node* deleteNode(node* root) {
+	printf("%s\n", heap_head->key);
+
+	strcpy(heap_head->key, heap_tail->key);
+	node* tmp = heap_tail;
+
+	if (tmp->parent->right == tmp) {
+		tmp->parent->right = NULL;
+	}
+	else {
+		tmp->parent->left = NULL;
+	}
+	free(tmp);
+
+	resortMinNode(root);
+	heap_tail = findLastNode(root);
+
+	return root;
+}
+
+
 
 int main() {
 	char str[10];
@@ -145,6 +213,9 @@ int main() {
 			scanf("%s", &str);
 		}
 	}
+	//sortNode(root, heapSize);
 	deleteNode(root);
-	
+	deleteNode(root);
+	deleteNode(root);
+
 }
