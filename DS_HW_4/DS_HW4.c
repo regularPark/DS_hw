@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <ctype.h>
 #define MAX_LENGTH 20
 
 
@@ -18,6 +20,7 @@ int heapSize = 0;
 node* root = NULL;
 node* heap_head = NULL;
 node* heap_tail = NULL;
+bool isMin = true;
 
 void minSortNode(node* n);
 void maxSortNode(node* n);
@@ -25,6 +28,8 @@ node* insertNode(node* root, char* str, int heapSize);
 node* deleteNode(node* root);
 node* findLastNode(node* root);
 void resortMinNode(node* root);
+void resortMaxNode(node* root);
+int isEmpty();
 
 
 void minSortNode(node* n) {
@@ -66,7 +71,7 @@ node* insertNode(node* root, char *str, int heapSize) {
 	newNode->right = NULL;
 	
 	// empty
-	if (root == NULL) {
+	if (heap_head == NULL) {
 		heap_head = newNode;
 		heap_tail = newNode;
 		root = newNode;
@@ -103,7 +108,10 @@ node* insertNode(node* root, char *str, int heapSize) {
 					ptr->left = newNode;
 					newNode->parent = ptr;
 					
-					minSortNode(newNode);					
+					if (isMin)
+						minSortNode(newNode);
+					else
+						maxSortNode(newNode);
 											
 					heap_tail = newNode;
 				}
@@ -117,7 +125,11 @@ node* insertNode(node* root, char *str, int heapSize) {
 					ptr->right = newNode;
 					newNode->parent = ptr;
 
-					minSortNode(newNode);					
+					if (isMin) 
+						minSortNode(newNode);
+					else 
+						maxSortNode(newNode);
+
 				
 					heap_tail = newNode;
 				}
@@ -137,7 +149,7 @@ void resortMinNode(node* root) {
 	node* tmp = root;
 	while (tmp->left) {
 		if (tmp->left != NULL && tmp->right != NULL) {
-			if (strcmp(tmp->left->key, tmp->right->key) < 0 && strcmp(tmp->key, tmp->left->key) > 0) {
+			if (strcmp(tmp->left->key, tmp->right->key) <= 0 && strcmp(tmp->key, tmp->left->key) >= 0) {
 				strcpy(tmpStr, tmp->key);
 				strcpy(tmp->key, tmp->left->key);
 				strcpy(tmp->left->key, tmpStr);
@@ -162,6 +174,44 @@ void resortMinNode(node* root) {
 	}
 }
 
+void resortMaxNode(node* root) {
+	char tmpStr[10] = { NULL };
+	node* tmp = root;
+	while (tmp->left) {
+		if (tmp->left != NULL && tmp->right != NULL) {
+			if (strcmp(tmp->left->key, tmp->right->key) >= 0 && strcmp(tmp->key, tmp->left->key) <= 0) {
+				strcpy(tmpStr, tmp->key);
+				strcpy(tmp->key, tmp->left->key);
+				strcpy(tmp->left->key, tmpStr);
+				tmp = tmp->left;
+			}
+			else if (strcmp(tmp->left->key, tmp->right->key) < 0 && strcmp(tmp->key, tmp->right->key) > 0) {
+				strcpy(tmpStr, tmp->key);
+				strcpy(tmp->key, tmp->right->key);
+				strcpy(tmp->right->key, tmpStr);
+				tmp = tmp->right;
+			}
+		}
+		else if (tmp->left != NULL && tmp->right == NULL) {
+			if (strcmp(tmp->left->key, tmp->key) > 0) {
+				strcpy(tmpStr, tmp->key);
+				strcpy(tmp->key, tmp->left->key);
+				strcpy(tmp->left->key, tmpStr);
+			}
+			else break;
+		}
+		else break;
+	}
+}
+
+int isEmpty() {
+	if (heap_head == NULL) {
+		printf("Heap is Empty. INSERT first.\n");
+
+		return 1;
+	}
+	else return 0;
+}
 
 node* findLastNode(node* root) {
 	node* ptr;
@@ -178,44 +228,122 @@ node* findLastNode(node* root) {
 	return ptr;
 }
 
+
+
 node* deleteNode(node* root) {
-	printf("%s\n", heap_head->key);
-
-	strcpy(heap_head->key, heap_tail->key);
-	node* tmp = heap_tail;
-
-	if (tmp->parent->right == tmp) {
-		tmp->parent->right = NULL;
+	if (isEmpty()) {
+		return;
 	}
 	else {
-		tmp->parent->left = NULL;
+		printf("%s\n", heap_head->key);
+
+		strcpy(heap_head->key, heap_tail->key);
+		node* tmp = heap_tail;
+		if (tmp->parent == NULL) {
+			free(tmp);
+			heapSize--;
+			root = NULL;
+			heap_head = NULL;
+			return root;
+		}
+		else if (tmp->parent != NULL) {
+			if (tmp->parent->right == tmp) {
+				tmp->parent->right = NULL;
+			}
+			else {
+				tmp->parent->left = NULL;
+			}
+			free(tmp);
+		}
+		
+
+		if (isMin)
+			resortMinNode(root);
+		else
+			resortMaxNode(root);
+
+		heap_tail = findLastNode(root);
+
+		heapSize--;
+
+		return root;
 	}
-	free(tmp);
+	
+}
 
-	resortMinNode(root);
-	heap_tail = findLastNode(root);
 
-	return root;
+void sort(node* root) {
+	while (!isEmpty()) {
+		deleteNode(root);
+	}
 }
 
 
 
-int main() {
-	char str[10];
-	printf("> ");
-	scanf("%s", &str);
-	if (strcmp("QUIT", str) != 0) {
-		while (strcmp("QUIT", str) != 0) {
-			heapSize++;	 // start of size is 1.
-			
-			root = insertNode(root, str, heapSize);
-			printf("> ");
-			scanf("%s", &str);
+int main() {	
+	char str[20];
+	
+	/*handler*/
+	while (true) {
+		printf("> ");
+		fgets(str, MAX_LENGTH, stdin);
+		if (str[strlen(str) - 1] == '\n') str[strlen(str) - 1] = '\0';
+		// set mode
+		if (strcmp("START MIN", str) == 0) {
+			isMin = true;
+			break;
+		}
+		else if (strcmp("START MAX", str) == 0) {
+			isMin = false;
+			break;
+		}
+		else {
+			printf("Input \"START MIN\" or \"START MAX\".\n");
 		}
 	}
-	//sortNode(root, heapSize);
-	deleteNode(root);
-	deleteNode(root);
-	deleteNode(root);
+
+	int i = 0;
+
+	printf("> ");
+	fgets(str, MAX_LENGTH, stdin);
+	if (str[strlen(str) - 1] == '\n') str[strlen(str) - 1] = '\0';
+
+	if (strcmp("QUIT", str) != 0) {
+		while (strcmp("QUIT", str) != 0) {
+
+			// INSERT
+			if(strncmp("INSERT", str, 6) == 0) {
+				heapSize++;	 // start of size is 1.
+
+				char sArr[MAX_LENGTH];
+				strcpy(sArr, str);
+				char* ptr = strtok(sArr, "INSERT ");
+				if (islower(ptr[0]) || isdigit(ptr[0])) {
+					root = insertNode(root, ptr, heapSize);
+				}
+				else
+					printf("key value must be LOWER character. Input again, please.\n");
+			}
+
+			// DELETE
+			else if (strcmp("DELETE", str) == 0) {
+				deleteNode(root);
+			}
+
+			// SORT
+			else if (strcmp("SORT", str) == 0) {
+				sort(root);
+			}
+			else {
+				printf("Input \"INSERT\" || \"DELETE\" || \"SORT\".\n");
+			}
+						
+			printf("> ");
+			fgets(str, MAX_LENGTH, stdin);
+			if (str[strlen(str) - 1] == '\n') str[strlen(str) - 1] = '\0';
+		}
+	}
+	
+
 
 }
