@@ -10,18 +10,22 @@
 
 // 시간 리턴하기
 
-void insertSort(char(**str)[MAX_COUNT], int size);
-void bubbleSort(char(**str)[MAX_COUNT], int size);
+float insertSort(char(**str)[MAX_COUNT], int size);
+float bubbleSort(char(**str)[MAX_COUNT], int size);
 void merge(char(**str)[MAX_COUNT], int start, int middle, int end);
 void mergeSort(char(**str)[MAX_COUNT], int start, int end);
+float mgSortHandler(char *str[MAX_COUNT], int size);
 void quickSort(char(**str)[MAX_COUNT], int left, int right);
-void qSortHandler(char *str[MAX_COUNT], int size);
+float qSortHandler(char *str[MAX_COUNT], int size);
+void swap(char(**str)[MAX_COUNT], int i, int j);
+void heapify(char(**str)[MAX_COUNT], int size, int i);
+float heapSort(char(**str)[MAX_COUNT], int size);
 
 char mergeSorted[MAX_COUNT][MAX_LENGTH];
 char *sArr[MAX_COUNT] = { NULL, };
 
 
-void insertSort(char (**str)[MAX_COUNT], int size) {
+float insertSort(char (**str)[MAX_COUNT], int size) {
 	// malloc
 	for (int i = 0; i < size; i++) {
 		sArr[i] = (char*)malloc(sizeof(char)*(MAX_LENGTH));
@@ -32,7 +36,7 @@ void insertSort(char (**str)[MAX_COUNT], int size) {
 	float isRes;
 	isStart = clock();
 
-	printf("\n=> Starting – Insert sort\n");
+	printf("\n=> Starting - Insert sort\n");
 
 	int j;
 	for (int i = 1; i < size; i++) {
@@ -58,7 +62,7 @@ void insertSort(char (**str)[MAX_COUNT], int size) {
 	}*/
 
 	printf("=> Finished\n");
-	printf("Insert sort : %f\n", isRes);
+	printf("=> Created - insertSort.out\n");
 
 	FILE *fp;
 	if ((fp = fopen("insertSort.txt", "w")) == NULL) {
@@ -73,6 +77,8 @@ void insertSort(char (**str)[MAX_COUNT], int size) {
 	for (int i = 0; i < size; i++) {
 		free(sArr[i]);
 	}
+
+	return isRes;
 }
 
 
@@ -102,7 +108,7 @@ void quickSort(char(**str)[MAX_COUNT], int left, int right) {
 		quickSort(str, L, right);
 }
 
-void qSortHandler(char *str[MAX_COUNT], int size) {
+float qSortHandler(char *str[MAX_COUNT], int size) {
 	// malloc for quick sort
 	for (int i = 0; i < size; i++) {
 		sArr[i] = (char*)malloc(sizeof(char)*(MAX_LENGTH));
@@ -112,14 +118,14 @@ void qSortHandler(char *str[MAX_COUNT], int size) {
 	clock_t qsStart, qsEnd;
 	float qsRes;
 	qsStart = clock();
-	printf("=> Starting – Quick sort\n");
+	printf("=> Starting - Quick sort\n");
 
 	quickSort(sArr, 0, size - 1);
 
 	qsEnd = clock();
 	qsRes = (float)(qsEnd - qsStart) / CLOCKS_PER_SEC;
 	printf("=> Finished\n");
-	printf("Quick sort : %f", qsRes);
+	printf("=> Created - quickSort.out");
 	printf("\n");
 
 	FILE *fp;
@@ -134,6 +140,8 @@ void qSortHandler(char *str[MAX_COUNT], int size) {
 	for (int i = 0; i < size; i++) {
 		free(sArr[i]);
 	}
+
+	return qsRes;
 }
 
 
@@ -186,7 +194,7 @@ void mergeSort(char(**str)[MAX_COUNT], int start, int end) {
 	}
 }
 
-void mgSortHandler(char *str[MAX_COUNT], int size) {
+float mgSortHandler(char *str[MAX_COUNT], int size) {
 	// malloc for merge sort
 	for (int i = 0; i < size; i++) {
 		sArr[i] = (char*)malloc(sizeof(char)*(MAX_LENGTH));
@@ -196,7 +204,7 @@ void mgSortHandler(char *str[MAX_COUNT], int size) {
 	clock_t mgStart, mgEnd;
 	float mgRes;
 	mgStart = clock();
-	printf("=> Starting – Merge sort\n");
+	printf("=> Starting - Merge sort\n");
 
 	mergeSort(sArr, 0, size - 1);
 
@@ -213,17 +221,20 @@ void mgSortHandler(char *str[MAX_COUNT], int size) {
 	mgEnd = clock();
 	mgRes = (float)(mgEnd - mgStart) / CLOCKS_PER_SEC;
 	printf("=> Finished\n");
-	printf("Merge sort : %f", mgRes);
+	printf("=> Created - mergeSort.out\n");
+
 
 	
 
 	for (int i = 0; i < size; i++) {
 		free(sArr[i]);
 	}
+
+	return mgRes;
 }
 
 
-void bubbleSort(char(**str)[MAX_COUNT], int size) {
+float bubbleSort(char(**str)[MAX_COUNT], int size) {
 	// malloc
 	for (int i = 0; i < size; i++) {
 		sArr[i] = (char*)malloc(sizeof(char)*(MAX_LENGTH));
@@ -234,7 +245,7 @@ void bubbleSort(char(**str)[MAX_COUNT], int size) {
 	float bsRes;
 	bsStart = clock();
 
-	printf("\n=> Starting – Bubble sort\n");
+	printf("\n=> Starting - Bubble sort\n");
 
 	for (int i = 0; i < size - 1; i++)
 	{
@@ -254,17 +265,9 @@ void bubbleSort(char(**str)[MAX_COUNT], int size) {
 
 	bsRes = (float)(bsEnd - bsStart) / CLOCKS_PER_SEC;
 
-
-	/*for (int i = 0; i < size; i++) {
-		printf("%s ", bsArr[i]);
-	}
-	printf("\n");*/
-	
-	
-
 	printf("=> Finished\n");
-	printf("Bubble sort : %f", bsRes);
-
+	printf("=> Created - bubbleSort.out\n");
+	
 	FILE *fp;
 	if ((fp = fopen("bubbleSort.txt", "w")) == NULL) {
 		fprintf(stderr, "Error "); 
@@ -279,13 +282,80 @@ void bubbleSort(char(**str)[MAX_COUNT], int size) {
 		free(sArr[i]);
 	}
 
-
-
+	return bsRes;
 }
 
 
-void heapSort() {
+void swap(char (**str)[MAX_COUNT], int i, int j) {
+	char tmp[MAX_LENGTH] = { NULL, };
+	strcpy(tmp, *(str + i));
+	strcpy(*(str + i), *(str + j));
+	strcpy(*(str + j), tmp);
+}
 
+void heapify(char (**str)[MAX_COUNT], int size, int i) {
+
+	int c = 2 * i + 1;
+	// choose left child
+
+	if (c < size - 1 && strcmp(*(str + c), *(str + c + 1)) < 0 )
+		c++;
+	// select right child when exists right child and right one bigger than left one. 
+
+	if (c < size && strcmp(*(str + i),*(str + c)) < 0)
+		swap(str, i, c);
+	// change each other when child bigger than parent 
+	
+
+	if (c < size / 2)
+		heapify(str, size, c);
+	// recursion in inner node 
+}
+
+float heapSort(char(**str)[MAX_COUNT], int size) {
+	// malloc
+	for (int i = 0; i < size; i++) {
+		sArr[i] = (char*)malloc(sizeof(char)*(MAX_LENGTH));
+		strcpy(sArr[i], *(str + i));
+	}
+
+	clock_t hsStart, hsEnd;
+	float hsRes;
+	hsStart = clock();
+
+	printf("\n=> Starting - Heap sort\n");
+
+	for (int i = size / 2; i >= 0; i--) {
+		heapify(sArr, size, i);
+	}
+
+	for (int i = size - 1; i >= 0; i--) {
+		swap(sArr, i, 0);
+		heapify(sArr, i, 0);
+	}	
+	hsEnd = clock();
+
+	hsRes = (float)(hsEnd - hsStart) / CLOCKS_PER_SEC;
+
+	printf("=> Finished\n");
+	printf("=> Created - heapSort.out\n");
+
+
+	FILE *fp;
+	if ((fp = fopen("heapSort.txt", "w")) == NULL) {
+		fprintf(stderr, "Error ");
+		exit(1);
+	}
+	for (int i = 0; i < size; i++)
+		fprintf(fp, "%s ", sArr[i]);
+	fclose(fp);
+
+	// free malloc
+	for (int i = 0; i < size; i++) {
+		free(sArr[i]);
+	}
+
+	return hsRes;
 }
 
 
@@ -312,26 +382,31 @@ int main() {
 		wArr[i] = (char*)malloc(sizeof(char)* (MAX_LENGTH));
 		strcpy(wArr[i], word);
 	}
+
+	float bs, is, qs, ms, hs;
 	
-	bubbleSort(wArr, n);
+	bs = bubbleSort(wArr, n);
 	printf("\n");
 
-	insertSort(wArr, n);
+	is = insertSort(wArr, n);
 	printf("\n");
 
 
-	qSortHandler(wArr, n);
+	qs = qSortHandler(wArr, n);
 	printf("\n");
 
-	mgSortHandler(wArr, n);
+	ms = mgSortHandler(wArr, n);
 	printf("\n");
 	
+	hs = heapSort(wArr, n);
+	printf("\n");
 
-	//for (int i = 0; i < n; i++) {
-	//	printf("%s ", wArr[i]);
-	//}
-	//printf("\n");
+	printf("\nRunning time\n");
+	printf("Bubble sort : %f sec\n", bs);
+	printf("Insert sort : %f sec\n", is);
+	printf("Quick sort : %f sec\n", qs);
+	printf("Merge sort : %f sec\n", ms);
+	printf("Heap sort : %f sec\n", hs);
 
-	printf("done");
 	return 0;
 }
