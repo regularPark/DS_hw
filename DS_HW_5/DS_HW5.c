@@ -8,7 +8,6 @@
 #define MAX_COUNT 150001
 #define MAX_LENGTH 21
 
-// 시간 리턴하기
 
 float insertSort(char(**str)[MAX_COUNT], int size);
 float bubbleSort(char(**str)[MAX_COUNT], int size);
