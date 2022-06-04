@@ -5,7 +5,7 @@
 #include <time.h>
 #include <string.h>
 
-#define MAX_COUNT 150000
+#define MAX_COUNT 150001
 #define MAX_LENGTH 21
 
 // 시간 리턴하기
