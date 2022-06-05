@@ -1,3 +1,4 @@
+// 2019113632 Park, Jeong-Kyu
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <stdio.h>
